@@ -22,9 +22,9 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+// At least 6 characters (Firebase's own minimum) — kept simple
+// and non-punishing, per the "lightweight" brief.
 function isStrongPassword(pw) {
-  // At least 6 characters (Firebase's own minimum) — kept simple
-  // and non-punishing, per the "lightweight" brief.
   return pw.length >= 6;
 }
 
@@ -35,6 +35,10 @@ function showBanner(el, message, type) {
 
 function hideBanner(el) {
   el.className = "form-banner";
+}
+
+function setCaptchaError(bannerEl, message) {
+  showBanner(bannerEl, message, "error");
 }
 
 function setFieldError(inputEl, errorEl, message) {
@@ -125,6 +129,7 @@ function initLoginPage() {
     const email = emailInput.value.trim();
     const password = passInput.value;
 
+    // 1. Core Field Validations
     let valid = true;
     if (!isValidEmail(email)) {
       setFieldError(emailInput, emailError, "Enter a valid email address.");
@@ -136,6 +141,13 @@ function initLoginPage() {
     }
     if (!valid) return;
 
+    // 2. Security Wrapper: Verify Cloudflare Turnstile Token
+    const turnstileResponse = typeof turnstile !== "undefined" ? turnstile.getResponse() : "";
+    if (!turnstileResponse) {
+      setCaptchaError(banner, "Please complete the security check.");
+      return;
+    }
+
     setLoading(submitBtn, spinner, true, "Log In");
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -143,6 +155,8 @@ function initLoginPage() {
     } catch (error) {
       showBanner(banner, friendlyAuthError(error), "error");
       setLoading(submitBtn, spinner, false, "Log In");
+      // Safely reset the Cloudflare checkbox token if authentication fails
+      if (typeof turnstile !== "undefined") turnstile.reset();
     }
   });
 
