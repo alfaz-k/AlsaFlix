@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Log In — AlsaFlix</title>
 <link rel="stylesheet" href="style.css">
-<link rel="icon" type="image/svg+xml" href="images/favicon.svg"></head>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <!-- Replaced Google with Cloudflare Turnstile Script -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
 <body>
   <div class="backdrop"></div>
 
@@ -32,6 +35,11 @@
             <button type="button" class="toggle-pass" id="login-toggle-pass">Show</button>
           </div>
           <div class="field-error" id="login-password-error"></div>
+        </div>
+
+        <!-- Added Cloudflare Turnstile Checkbox Element (Uses Free, Always-Pass Test Key) -->
+        <div style="margin: 15px 0; display: flex; justify-content: center;">
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAD4sAHJB3aWn51TF"></div>
         </div>
 
         <button type="submit" class="btn-primary" id="login-submit">
