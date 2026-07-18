@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — AlsaFlix</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg"></head>
+<body>
+  <div class="backdrop"></div>
+
+  <main class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-logo">Alsa<span>Flix</span></div>
+      <p class="auth-subtitle">Create an account to get started.</p>
+
+      <div class="form-banner" id="signup-banner"></div>
+
+      <form id="signup-form" novalidate>
+        <div class="field">
+          <label for="signup-name">Name</label>
+          <div class="field-input-wrap">
+            <input type="text" id="signup-name" placeholder="Your name" autocomplete="name">
+          </div>
+          <div class="field-error" id="signup-name-error"></div>
+        </div>
+
+        <div class="field">
+          <label for="signup-email">Email</label>
+          <div class="field-input-wrap">
+            <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="field-error" id="signup-email-error"></div>
+        </div>
+
+        <div class="field">
+          <label for="signup-password">Password</label>
+          <div class="field-input-wrap">
+            <input type="password" id="signup-password" placeholder="At least 6 characters" autocomplete="new-password">
+            <button type="button" class="toggle-pass" id="signup-toggle-pass">Show</button>
+          </div>
+          <div class="field-error" id="signup-password-error"></div>
+        </div>
+
+        <div class="field">
+          <label for="signup-confirm">Confirm Password</label>
+          <div class="field-input-wrap">
+            <input type="password" id="signup-confirm" placeholder="Re-enter your password" autocomplete="new-password">
+            <button type="button" class="toggle-pass" id="signup-toggle-confirm">Show</button>
+          </div>
+          <div class="field-error" id="signup-confirm-error"></div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="signup-submit">
+          <span class="spinner"></span>
+          <span class="btn-label">Create Account</span>
+        </button>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="index.html">Log in</a></p>
+    </div>
+  </main>
+
+  <footer class="footer">Made by Alfaz <span>❤️</span></footer>
+
+<script type="module" src="firebase.js"></script>
+
+<script type="module">
+  import { initSignupPage } from "./auth.js";
+  initSignupPage();
+</script>
+</body>
+</html>

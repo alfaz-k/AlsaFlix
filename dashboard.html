@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — AlsaFlix</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg"></head>
+<body>
+  <nav class="navbar">
+    <div class="logo">Alsa<span>Flix</span></div>
+
+    <div class="navbar-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" id="search-input" placeholder="Search movies by title...">
+    </div>
+
+    <div class="navbar-right">
+      <button class="btn-logout" id="logout-btn" type="button">Logout</button>
+      <button id="theme-toggle">🌙</button>
+    </div>
+  </nav>
+
+  <main class="dashboard-main">
+    <div class="welcome-block">
+      <div class="welcome-eyebrow">Dashboard</div>
+      <h1 class="welcome-title">Welcome, <span id="welcome-name">...</span></h1>
+    </div>
+
+    <p class="results-meta" id="results-meta"></p>
+
+    <div class="movie-grid" id="movie-grid"></div>
+  </main>
+
+  <footer class="footer">Made by Alfaz <span>❤️</span></footer>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>

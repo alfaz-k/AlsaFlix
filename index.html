@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — AlsaFlix</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg"></head>
+<body>
+  <div class="backdrop"></div>
+
+  <main class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-logo">Alsa<span>Flix</span></div>
+      <p class="auth-subtitle">Log in to keep watching.</p>
+
+      <div class="form-banner" id="login-banner"></div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <div class="field-input-wrap">
+            <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="field-error" id="login-email-error"></div>
+        </div>
+
+        <div class="field">
+          <label for="login-password">Password</label>
+          <div class="field-input-wrap">
+            <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password">
+            <button type="button" class="toggle-pass" id="login-toggle-pass">Show</button>
+          </div>
+          <div class="field-error" id="login-password-error"></div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="login-submit">
+          <span class="spinner"></span>
+          <span class="btn-label">Log In</span>
+        </button>
+      </form>
+
+      <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up</a></p>
+    </div>
+  </main>
+
+  <footer class="footer">Made by Alfaz <span>❤️</span></footer>
+
+  <script type="module" src="firebase.js"></script>
+
+<script type="module">
+  import { initLoginPage } from "./auth.js";
+initLoginPage();
+</script>
+</body>
+</html>

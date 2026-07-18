@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Bold Sharp Display 'A' -->
+  <path d="M4 27L14.2 4.8C14.9 3.2 17.1 3.2 17.8 4.8L28 27" stroke="#e63950" stroke-width="4.5" stroke-linecap="square"/>
+  
+  <!-- Futuristic Play bar crossbeam -->
+  <path d="M10 19.5L20 15.5V23.5L10 19.5Z" fill="url(#accentBeam)"/>
+
+  <defs>
+    <linearGradient id="accentBeam" x1="10" y1="19.5" x2="20" y2="19.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ff4b63"/>
+      <stop offset="100%" stop-color="#e63950"/>
+    </linearGradient>
+  </defs>
+</svg>
