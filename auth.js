@@ -6,13 +6,14 @@
 // stay logged in across visits until they explicitly log out.
 // ============================================================
 
-import { auth } from "./firebase.js";
+import { auth, provider } from "./firebase.js"; // Updated to import provider
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile
+  updateProfile,
+  signInWithPopup // Imported signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ---- Helpers ----------------------------------------------
@@ -58,7 +59,8 @@ function friendlyAuthError(error) {
     "auth/wrong-password": "Incorrect password. Try again.",
     "auth/invalid-credential": "Incorrect email or password.",
     "auth/too-many-requests": "Too many attempts. Please wait a moment and try again.",
-    "auth/network-request-failed": "Network error. Check your connection and try again."
+    "auth/network-request-failed": "Network error. Check your connection and try again.",
+    "auth/popup-closed-by-user": "The sign-in popup was closed before finishing."
   };
   return map[code] || "Something went wrong. Please try again.";
 }
@@ -143,6 +145,20 @@ function initLoginPage() {
       setLoading(submitBtn, spinner, false, "Log In");
     }
   });
+
+  // ---- Google Sign-In Logic ----
+  const googleBtn = document.getElementById("google-login-btn");
+  if (googleBtn) {
+    googleBtn.addEventListener("click", async () => {
+      hideBanner(banner);
+      try {
+        await signInWithPopup(auth, provider);
+        // redirectIfLoggedIn() will catch the new user session and send them to dashboard.html
+      } catch (error) {
+        showBanner(banner, friendlyAuthError(error), "error");
+      }
+    });
+  }
 }
 
 // ---- Signup page wiring ----------------------------------------
