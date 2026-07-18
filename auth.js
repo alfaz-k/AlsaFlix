@@ -6,14 +6,15 @@
 // stay logged in across visits until they explicitly log out.
 // ============================================================
 
-import { auth, provider } from "./firebase.js"; // Updated to import provider
+import { auth, provider } from "./firebase.js"; 
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   updateProfile,
-  signInWithPopup // Imported signInWithPopup
+  signInWithPopup,
+  sendPasswordResetEmail // Imported sendPasswordResetEmail function
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ---- Helpers ----------------------------------------------
@@ -151,14 +152,37 @@ function initLoginPage() {
     setLoading(submitBtn, spinner, true, "Log In");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // onAuthStateChanged in redirectIfLoggedIn() handles the redirect.
     } catch (error) {
       showBanner(banner, friendlyAuthError(error), "error");
       setLoading(submitBtn, spinner, false, "Log In");
-      // Safely reset the Cloudflare checkbox token if authentication fails
       if (typeof turnstile !== "undefined") turnstile.reset();
     }
   });
+
+  // ---- Forgot Password Logic ----
+  const forgotPassLink = document.getElementById("login-forgot-pass");
+  if (forgotPassLink) {
+    forgotPassLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      hideBanner(banner);
+      clearFieldError(emailInput, emailError);
+
+      const email = emailInput.value.trim();
+
+      // Ensure the email field isn't empty before sending the link
+      if (!email || !isValidEmail(email)) {
+        setFieldError(emailInput, emailError, "Please enter a valid email address first.");
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, email); // Fires standard reset template link via Firebase
+        showBanner(banner, "Password reset email sent! Check your inbox.", "success");
+      } catch (error) {
+        showBanner(banner, friendlyAuthError(error), "error");
+      }
+    });
+  }
 
   // ---- Google Sign-In Logic ----
   const googleBtn = document.getElementById("google-login-btn");
@@ -167,7 +191,6 @@ function initLoginPage() {
       hideBanner(banner);
       try {
         await signInWithPopup(auth, provider);
-        // redirectIfLoggedIn() will catch the new user session and send them to dashboard.html
       } catch (error) {
         showBanner(banner, friendlyAuthError(error), "error");
       }
@@ -176,6 +199,7 @@ function initLoginPage() {
 }
 
 // ---- Signup page wiring ----------------------------------------
+// (Unmodified to protect stability)
 function initSignupPage() {
   redirectIfLoggedIn();
 
@@ -233,7 +257,6 @@ function initSignupPage() {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
-      // onAuthStateChanged in redirectIfLoggedIn() handles the redirect.
     } catch (error) {
       showBanner(banner, friendlyAuthError(error), "error");
       setLoading(submitBtn, spinner, false, "Create Account");
