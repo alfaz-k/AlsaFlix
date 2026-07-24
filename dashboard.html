@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — AlsaFlix</title>
@@ -17,6 +18,9 @@
       </svg>
       <input type="text" id="search-input" placeholder="Search movies by title...">
     </div>
+    <button type="button" id="suggest-movie-btn" class="btn-suggest">
+  🎬 Suggest Movie
+</button>
 
     <div class="navbar-right">
       <button class="btn-logout" id="logout-btn" type="button">Logout</button>
@@ -34,10 +38,48 @@
 
     <div class="movie-grid" id="movie-grid"></div>
   </main>
+  <!-- Suggest Movie Modal -->
+<div id="suggest-modal" class="modal-overlay">
+  <div class="modal-card">
+    <button type="button" id="close-modal" class="modal-close">&times;</button>
+    <h3 class="modal-title">Suggest a Movie</h3>
+    <p class="modal-subtitle">Let us know what movie or series you'd like to watch!</p>
+    
+    <div id="suggest-banner" class="form-banner"></div>
+
+    <form id="suggest-form">
+      <div class="field">
+        <label for="suggest-title">Movie / Show Title *</label>
+        <div class="field-input-wrap">
+          <input type="text" id="suggest-title" placeholder="e.g., Inception, Breaking Bad" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="suggest-email">Your Email (Optional)</label>
+        <div class="field-input-wrap">
+          <input type="email" id="suggest-email" placeholder="you@example.com">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="suggest-notes">Additional Notes (Optional)</label>
+        <div class="field-input-wrap">
+          <textarea id="suggest-notes" placeholder="Release year, language, or specific details..." rows="3" style="width: 100%; background: transparent; border: none; color: #fff; padding: 10px; resize: none; outline: none;"></textarea>
+        </div>
+      </div>
+
+      <button type="submit" id="suggest-submit" class="btn-primary" style="margin-top: 15px;">
+        <span class="btn-label">Send Suggestion</span>
+      </button>
+    </form>
+  </div>
+</div>
 
   <footer class="footer">Made by Alfaz <span>❤️</span></footer>
 
   <script type="module" src="firebase.js"></script>
   <script type="module" src="dashboard.js"></script>
+  <script type="module" src="suggest.js"></script>
 </body>
 </html>
