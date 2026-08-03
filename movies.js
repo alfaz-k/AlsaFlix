@@ -23,9 +23,9 @@ const movies = [
   },
   {
     id: 3,
-    title: "STAY TONE",
-    poster: "images/coming.png",
-    driveLink: "https://drive.google.com/drive/u/0/my-drive"
+    title: "Spider-Man Brand New Day Hindi (2026)",
+    poster: "images/spider.jpg",
+    driveLink: "https://drive.google.com/file/d/1QDHRH80Q6dbAh19kzcunn5MMXv1DiNZu/preview"
   },
   {
     id: 4,
