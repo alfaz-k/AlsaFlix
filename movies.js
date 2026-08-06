@@ -29,9 +29,9 @@ const movies = [
   },
   {
     id: 4,
-    title: "STAY TONE",
-    poster: "images/coming.png",
-    driveLink: "https://drive.google.com/drive/u/0/my-drive"
+    title: "Evil Dead Burn (Hindi)",
+    poster: "images/evil.jpeg",
+    driveLink: "https://drive.google.com/file/d/1BL6cnGlXBWis7oIIxKH-X2UqiiqgYKjS/preview"
   },
   {
     id: 5,
