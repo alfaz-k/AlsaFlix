@@ -5,6 +5,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — AlsaFlix</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('alsaflix-theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg"></head>
 <body>
@@ -75,6 +84,7 @@
     </form>
   </div>
 </div>
+
 <!-- Video Player Modal Overlay -->
   <div id="video-modal" class="video-modal" aria-hidden="true">
     <div class="video-modal-backdrop" id="modal-backdrop"></div>
@@ -117,8 +127,10 @@
   <button id="close-toast-btn" aria-label="Close notice">&times;</button>
 </div>
 
+
   <footer class="footer">Made by Alfaz <span>❤️</span></footer>
 
+  <script src="theme.js"></script>
   <script type="module" src="firebase.js"></script>
   <script type="module" src="dashboard.js"></script>
   <script type="module" src="suggest.js"></script>
