@@ -39,11 +39,11 @@ const movies = [
     poster: "images/96.jpeg",
     driveLink: "https://youtu.be/63F9Pv4k4wk?si=TcTdO8yj8yfzJ0Mw"
   },
-  {
+   {
     id: 6,
-    title: "STAY TUNED",
-    poster: "images/coming.png",
-    driveLink: "https://drive.google.com/drive/u/0/my-drive"
+    title: "Middle Class Love (2022)",
+    poster: "images/middle.jpeg",
+    driveLink: "https://youtu.be/FjjxAiJLR7M?si=alQ1um_yqy1nF3oF"
   },
   {
     id: 7,
