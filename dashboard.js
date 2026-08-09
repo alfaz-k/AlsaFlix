@@ -1,7 +1,7 @@
 // ============================================================
 // DASHBOARD.JS
 // Protects route, renders movie cards from movies.js, and
-// handles in-app video streaming modal + search + theme.
+// handles in-app video streaming modal + search + theme + mobile toast.
 // ============================================================
 
 import { movies } from "./movies.js";
@@ -19,6 +19,30 @@ const modalCloseBtn = document.getElementById("modal-close-btn");
 const modalMovieTitle = document.getElementById("modal-movie-title");
 const videoIframe = document.getElementById("video-iframe");
 
+// Mobile Toast Notice DOM Elements
+const mobileNoticeToast = document.getElementById("mobile-notice-toast");
+const closeToastBtn = document.getElementById("close-toast-btn");
+
+// ---- Show Toast Notice for Mobile Users ----
+function showMobileNotice() {
+  const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+
+  if (isMobile && mobileNoticeToast) {
+    mobileNoticeToast.classList.add("show");
+
+    // Auto dismiss after 6 seconds
+    setTimeout(() => {
+      mobileNoticeToast.classList.remove("show");
+    }, 6000);
+  }
+}
+
+if (closeToastBtn && mobileNoticeToast) {
+  closeToastBtn.addEventListener("click", () => {
+    mobileNoticeToast.classList.remove("show");
+  });
+}
+
 // ---- Convert Google Drive / Public Links into Streamable Embeds ----
 function getEmbedUrl(rawUrl) {
   if (!rawUrl) return "";
@@ -35,8 +59,11 @@ function getEmbedUrl(rawUrl) {
 function openVideoModal(movie) {
   if (!videoModal || !videoIframe) return;
 
+  // Trigger mobile desktop view tip when modal opens
+  showMobileNotice();
+
   const embedUrl = getEmbedUrl(movie.driveLink);
-  modalMovieTitle.textContent = movie.title;
+  if (modalMovieTitle) modalMovieTitle.textContent = movie.title;
   videoIframe.src = embedUrl;
 
   videoModal.classList.add("active");
@@ -158,6 +185,8 @@ protectDashboard((user) => {
       displayName = user.displayName;
     } else if (user.email) {
       displayName = user.email.split("@")[0];
+    } else if (user.phoneNumber) {
+      displayName = user.phoneNumber;
     }
   }
 
