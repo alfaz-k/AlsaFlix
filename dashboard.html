@@ -75,6 +75,34 @@
     </form>
   </div>
 </div>
+<!-- Video Player Modal Overlay -->
+  <div id="video-modal" class="video-modal" aria-hidden="true">
+    <div class="video-modal-backdrop" id="modal-backdrop"></div>
+    <div class="video-modal-container">
+      <div class="video-modal-header">
+        <div class="video-info">
+          <span class="badge-live">STREAMING</span>
+          <h3 id="modal-movie-title">Movie Title</h3>
+        </div>
+        <button id="modal-close-btn" class="modal-close-btn" aria-label="Close video player">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="video-player-frame">
+        <iframe 
+          id="video-iframe" 
+          src="" 
+          title="AlsaFlix Player" 
+          allow="autoplay; encrypted-media; fullscreen" 
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">Made by Alfaz <span>❤️</span></footer>
 
