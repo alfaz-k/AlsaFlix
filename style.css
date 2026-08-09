@@ -931,7 +931,7 @@ body.dark-mode {
 }
 
 /* ============================================================
-   VIDEO PLAYER MODAL
+   VIDEO PLAYER MODAL (RESPONSIVE & MOBILE-FRIENDLY)
    ============================================================ */
 .video-modal {
   position: fixed;
@@ -939,6 +939,7 @@ body.dark-mode {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* Handles dynamic mobile address bar heights */
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -947,6 +948,7 @@ body.dark-mode {
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s ease;
+  padding: 16px;
 }
 
 .video-modal.active {
@@ -961,14 +963,14 @@ body.dark-mode {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 10, 15, 0.85);
+  background: rgba(10, 10, 15, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .video-modal-container {
   position: relative;
-  width: 90%;
+  width: 100%;
   max-width: 960px;
   background: #14151f;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -978,6 +980,8 @@ body.dark-mode {
   transform: scale(0.92);
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 10;
+  display: flex;
+  flex-direction: column;
 }
 
 .video-modal.active .video-modal-container {
@@ -989,7 +993,7 @@ body.dark-mode {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 14px 20px;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -997,7 +1001,8 @@ body.dark-mode {
 .video-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  min-width: 0; /* Prevents text overflow */
 }
 
 .badge-live {
@@ -1007,15 +1012,19 @@ body.dark-mode {
   color: #e50914;
   background: rgba(229, 9, 20, 0.12);
   border: 1px solid rgba(229, 9, 20, 0.3);
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .video-info h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #ffffff;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Truncates long titles gracefully */
 }
 
 .modal-close-btn {
@@ -1029,6 +1038,7 @@ body.dark-mode {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
@@ -1042,11 +1052,11 @@ body.dark-mode {
   color: #ffffff;
 }
 
-/* Responsive 16:9 Aspect Ratio Aspect Box */
+/* Responsive Player Aspect Ratio */
 .video-player-frame {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 ratio */
+  aspect-ratio: 16 / 9; /* Modern responsive aspect ratio */
   background: #000000;
 }
 
@@ -1057,4 +1067,46 @@ body.dark-mode {
   width: 100%;
   height: 100%;
   border: none;
+}
+
+/* ============================================================
+   MOBILE & SMALL SCREEN BREAKPOINTS (Max-Width 640px)
+   ============================================================ */
+@media (max-width: 640px) {
+  .video-modal {
+    padding: 0; /* Fullscreen overlay on mobile phones */
+  }
+
+  .video-modal-container {
+    width: 100%;
+    height: auto;
+    max-height: 100dvh;
+    border-radius: 0; /* Flush edges like YouTube / Netflix mobile apps */
+    border: none;
+  }
+
+  .video-modal-header {
+    padding: 12px 16px;
+  }
+
+  .video-info h3 {
+    font-size: 14px;
+  }
+
+  .badge-live {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+
+  /* Optimize landscape orientation on mobile phones */
+  @media (orientation: landscape) {
+    .video-modal-header {
+      display: none; /* Hide header in landscape for pure widescreen view */
+    }
+
+    .video-player-frame {
+      height: 100dvh;
+      aspect-ratio: auto;
+    }
+  }
 }
