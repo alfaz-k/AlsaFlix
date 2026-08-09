@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up — AlsaFlix</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('alsaflix-theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg"></head>
 <body>
@@ -63,6 +72,7 @@
 
   <footer class="footer">Made by Alfaz <span>❤️</span></footer>
 
+<script src="theme.js"></script>
 <script type="module" src="firebase.js"></script>
 
 <script type="module">
