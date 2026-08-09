@@ -43,13 +43,32 @@ if (closeToastBtn && mobileNoticeToast) {
   });
 }
 
-// ---- Convert Google Drive / Public Links into Streamable Embeds ----
+// ---- Convert Google Drive & YouTube Links into Streamable Embeds ----
 function getEmbedUrl(rawUrl) {
   if (!rawUrl) return "";
   
-  // Convert Google Drive view/share links to preview embed links
+  // 1. Convert Google Drive view/share links
   if (rawUrl.includes("drive.google.com")) {
     return rawUrl.replace(/\/view(\?.*)?$/, "/preview").replace(/\/edit(\?.*)?$/, "/preview");
+  }
+
+  // 2. Convert YouTube links (standard, shorts, or mobile share links)
+  if (rawUrl.includes("youtube.com") || rawUrl.includes("youtu.be")) {
+    let videoId = "";
+
+    if (rawUrl.includes("youtu.be/")) {
+      videoId = rawUrl.split("youtu.be/")[1]?.split("?")[0];
+    } else if (rawUrl.includes("youtube.com/shorts/")) {
+      videoId = rawUrl.split("youtube.com/shorts/")[1]?.split("?")[0];
+    } else if (rawUrl.includes("watch?v=")) {
+      videoId = rawUrl.split("watch?v=")[1]?.split("&")[0];
+    } else if (rawUrl.includes("youtube.com/embed/")) {
+      return rawUrl;
+    }
+
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    }
   }
   
   return rawUrl;
@@ -129,7 +148,7 @@ function createMovieCard(movie) {
     </div>
   `;
 
-  // Intercept click to launch in-app player modal instead of new tab
+  // Intercept click to launch in-app player modal
   card.querySelector(".btn-watch").addEventListener("click", () => {
     openVideoModal(movie);
   });
