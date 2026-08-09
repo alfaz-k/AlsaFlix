@@ -35,37 +35,37 @@ const movies = [
   },
   {
     id: 5,
-    title: "STAY TONE",
-    poster: "images/coming.png",
-    driveLink: "https://drive.google.com/drive/u/0/my-drive"
+    title: "96 Movie (Hindi)",
+    poster: "images/96.jpeg",
+    driveLink: "https://youtu.be/63F9Pv4k4wk?si=TcTdO8yj8yfzJ0Mw"
   },
   {
     id: 6,
-    title: "STAY TONE",
+    title: "STAY TUNED",
     poster: "images/coming.png",
     driveLink: "https://drive.google.com/drive/u/0/my-drive"
   },
   {
     id: 7,
-    title: "STAY TONE",
+    title: "STAY TUNED",
     poster: "images/coming.png",
     driveLink: "https://drive.google.com/drive/u/0/my-drive"
   },
   {
     id: 8,
-    title: "STAY TONE",
+    title: "STAY TUNED",
     poster: "images/coming.png",
     driveLink: "https://drive.google.com/drive/u/0/my-drive"
   },
   {
     id: 9,
-    title: "STAY TONE",
+    title: "STAY TUNED",
     poster: "images/coming.png",
     driveLink: "https://drive.google.com/drive/u/0/my-drive"
   },
   {
     id: 10,
-    title: "STAY TONE",
+    title: "STAY TUNED",
     poster: "images/coming.png",
     driveLink: "https://drive.google.com/drive/u/0/my-drive"
   }
