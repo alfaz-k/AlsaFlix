@@ -1177,3 +1177,20 @@ body::after {
   body::before { animation: none; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/*=========================================================================*/
+.designer-link {
+  color: #34d399;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-bottom: 1px dashed rgba(52, 211, 153, 0.4);
+  padding-bottom: 1px;
+}
+
+.designer-link:hover {
+  color: #ffffff;
+  border-bottom-color: #34d399;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+}
+
