@@ -1,27 +1,55 @@
 // ============================================================
 // DASHBOARD.JS
-// Protects route, renders movie cards from movies.js, and
-// handles in-app video streaming modal + search + theme + mobile toast.
+// Protects route, renders movie cards from movies.js with clean hover
+// & scroll reveal, handles video modal, suggest modal, search & theme.
 // ============================================================
 
 import { movies } from "./movies.js";
 import { protectDashboard, wireLogout } from "./auth.js";
 
+// DOM Elements
 const grid = document.getElementById("movie-grid");
 const searchInput = document.getElementById("search-input");
 const welcomeName = document.getElementById("welcome-name");
 const resultsMeta = document.getElementById("results-meta");
 
-// Modal DOM Elements
+// Video Modal DOM Elements
 const videoModal = document.getElementById("video-modal");
 const modalBackdrop = document.getElementById("modal-backdrop");
 const modalCloseBtn = document.getElementById("modal-close-btn");
 const modalMovieTitle = document.getElementById("modal-movie-title");
 const videoIframe = document.getElementById("video-iframe");
 
-// Mobile Toast Notice DOM Elements
+// Suggest Movie Modal Elements
+const suggestBtn = document.getElementById("suggest-movie-btn");
+const suggestModal = document.getElementById("suggest-modal");
+const closeSuggestBtn = document.getElementById("close-modal");
+
+// Mobile Notice Toast Elements
 const mobileNoticeToast = document.getElementById("mobile-notice-toast");
 const closeToastBtn = document.getElementById("close-toast-btn");
+
+// ---- Suggest Movie Modal Handlers ----
+function openSuggestModal() {
+  if (!suggestModal) return;
+  suggestModal.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeSuggestModal() {
+  if (!suggestModal) return;
+  suggestModal.classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+if (suggestBtn) suggestBtn.addEventListener("click", openSuggestModal);
+if (closeSuggestBtn) closeSuggestBtn.addEventListener("click", closeSuggestModal);
+
+if (suggestModal) {
+  suggestModal.addEventListener("click", (e) => {
+    if (e.target === suggestModal) closeSuggestModal();
+  });
+}
 
 // ---- Show Toast Notice for Mobile Users ----
 function showMobileNotice() {
@@ -30,7 +58,6 @@ function showMobileNotice() {
   if (isMobile && mobileNoticeToast) {
     mobileNoticeToast.classList.add("show");
 
-    // Auto dismiss after 6 seconds
     setTimeout(() => {
       mobileNoticeToast.classList.remove("show");
     }, 6000);
@@ -47,12 +74,12 @@ if (closeToastBtn && mobileNoticeToast) {
 function getEmbedUrl(rawUrl) {
   if (!rawUrl) return "";
   
-  // 1. Convert Google Drive view/share links
+  // 1. Google Drive Links
   if (rawUrl.includes("drive.google.com")) {
     return rawUrl.replace(/\/view(\?.*)?$/, "/preview").replace(/\/edit(\?.*)?$/, "/preview");
   }
 
-  // 2. Convert YouTube links (standard, shorts, or mobile share links)
+  // 2. YouTube Links
   if (rawUrl.includes("youtube.com") || rawUrl.includes("youtu.be")) {
     let videoId = "";
 
@@ -78,7 +105,6 @@ function getEmbedUrl(rawUrl) {
 function openVideoModal(movie) {
   if (!videoModal || !videoIframe) return;
 
-  // Trigger mobile desktop view tip when modal opens
   showMobileNotice();
 
   const embedUrl = getEmbedUrl(movie.driveLink);
@@ -87,7 +113,7 @@ function openVideoModal(movie) {
 
   videoModal.classList.add("active");
   videoModal.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden"; // Block page scrolling behind modal
+  document.body.style.overflow = "hidden";
 }
 
 function closeVideoModal() {
@@ -97,23 +123,23 @@ function closeVideoModal() {
   videoModal.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
 
-  // Reset src after transition finishes so audio stops playing instantly
   setTimeout(() => {
     videoIframe.src = "";
   }, 300);
 }
 
-// Modal Event Listeners
+// Modal Global Listeners
 if (modalCloseBtn) modalCloseBtn.addEventListener("click", closeVideoModal);
 if (modalBackdrop) modalBackdrop.addEventListener("click", closeVideoModal);
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && videoModal && videoModal.classList.contains("active")) {
-    closeVideoModal();
+  if (e.key === "Escape") {
+    if (videoModal && videoModal.classList.contains("active")) closeVideoModal();
+    if (suggestModal && suggestModal.classList.contains("active")) closeSuggestModal();
   }
 });
 
-// ---- Skeleton loading state ----
+// ---- Skeleton Loading State ----
 function renderSkeletons(count = 10) {
   if (!grid) return;
   grid.innerHTML = "";
@@ -122,17 +148,37 @@ function renderSkeletons(count = 10) {
     card.className = "skeleton-card";
     card.innerHTML = `
       <div class="skeleton-poster"></div>
-      <div class="skeleton-line" style="width: 70%;"></div>
+      <div class="skeleton-line"></div>
       <div class="skeleton-btn"></div>
     `;
     grid.appendChild(card);
   }
 }
 
-// ---- Build one movie card ----
-function createMovieCard(movie) {
+// ---- Scroll Reveal Observer ----
+const scrollObserver = new IntersectionObserver(
+  (entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("reveal-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  {
+    root: null,
+    threshold: 0.1,
+    rootMargin: "0px 0px -40px 0px"
+  }
+);
+
+// ---- Build Card with Clean & Classy Hover Effect ----
+function createMovieCard(movie, index = 0) {
   const card = document.createElement("div");
-  card.className = "movie-card";
+  card.className = "movie-card reveal-init";
+  
+  card.style.transitionDelay = `${(index % 6) * 0.06}s`;
+
   card.innerHTML = `
     <div class="movie-poster-wrap">
       <img src="${movie.poster}" alt="${movie.title}" loading="lazy">
@@ -148,15 +194,24 @@ function createMovieCard(movie) {
     </div>
   `;
 
-  // Intercept click to launch in-app player modal
-  card.querySelector(".btn-watch").addEventListener("click", () => {
-    openVideoModal(movie);
+  // Watch Button Handler
+  card.querySelector(".btn-watch").addEventListener("click", (e) => {
+    const btn = e.currentTarget;
+    btn.classList.add("loading");
+
+    setTimeout(() => {
+      btn.classList.remove("loading");
+      openVideoModal(movie);
+    }, 400);
   });
+
+  // Observe card for scroll fade-in
+  scrollObserver.observe(card);
 
   return card;
 }
 
-// ---- Render list of movies ----
+// ---- Render Movie Grid ----
 function renderMovies(list) {
   if (!grid) return;
   grid.innerHTML = "";
@@ -175,13 +230,13 @@ function renderMovies(list) {
     return;
   }
 
-  list.forEach((movie) => grid.appendChild(createMovieCard(movie)));
+  list.forEach((movie, index) => grid.appendChild(createMovieCard(movie, index)));
   if (resultsMeta) {
     resultsMeta.textContent = `${list.length} title${list.length === 1 ? "" : "s"}`;
   }
 }
 
-// ---- Live search by title ----
+// ---- Live Title Search ----
 function initSearch() {
   if (!searchInput) return;
   searchInput.addEventListener("input", () => {
@@ -193,13 +248,17 @@ function initSearch() {
   });
 }
 
-// ---- Init ----
+// ---- Initialize App ----
 renderSkeletons();
 
 protectDashboard((user) => {
   let displayName = "Member";
 
-  if (user) {
+  // Load active profile from sessionStorage if chosen from profiles.html
+  const activeProfile = JSON.parse(sessionStorage.getItem("alsaflix_active_profile"));
+  if (activeProfile && activeProfile.name) {
+    displayName = activeProfile.name;
+  } else if (user) {
     if (user.displayName) {
       displayName = user.displayName;
     } else if (user.email) {
@@ -217,28 +276,30 @@ protectDashboard((user) => {
   initSearch();
 });
 
-// Wire logout button
+// Logout Button Connection
 const logoutBtn = document.getElementById("logout-btn");
 if (logoutBtn) {
   wireLogout(logoutBtn);
 }
 
-// Theme Toggle
+// ---- BULLETPROOF THEME TOGGLE ----
 const themeBtn = document.getElementById("theme-toggle");
 if (themeBtn) {
-  const savedTheme = localStorage.getItem("theme");
+  let savedTheme = localStorage.getItem("alsaflix-theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  themeBtn.textContent = savedTheme === "dark" ? "☀️" : "🌙";
 
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    themeBtn.textContent = "☀️";
-  } else {
-    themeBtn.textContent = "🌙";
-  }
+  themeBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
 
-  themeBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    const dark = document.body.classList.contains("dark-mode");
-    themeBtn.textContent = dark ? "☀️" : "🌙";
-    localStorage.setItem("theme", dark ? "dark" : "light");
-  });
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    
+    document.documentElement.setAttribute("data-theme", newTheme);
+    themeBtn.textContent = newTheme === "dark" ? "☀️" : "🌙";
+    
+    localStorage.setItem("alsaflix-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  }, true);
 }
