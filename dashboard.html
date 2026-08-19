@@ -9,7 +9,7 @@
     (function () {
       try {
         var t = localStorage.getItem('alsaflix-theme');
-        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        if (!t) t = 'light'; // Forced light mode default
         document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     })();
@@ -47,6 +47,7 @@
 
     <div class="movie-grid" id="movie-grid"></div>
   </main>
+  
   <!-- Suggest Movie Modal -->
 <div id="suggest-modal" class="modal-overlay">
   <div class="modal-card">
@@ -127,9 +128,7 @@
   <button id="close-toast-btn" aria-label="Close notice">&times;</button>
 </div>
 
-
-  <footer class="footer"> Designed & Developed By  <a href="https://alfaz81.vercel.app/" target="_blank" rel="noopener noreferrer" class="designer-link">ALFAZ KALADAGI</a> </footer>
-
+  <footer class="footer">DESIGNED AND DEVELOPED BY <span>ALFAZ KALADAGI</span></footer>
 
   <script src="theme.js"></script>
   <script type="module" src="firebase.js"></script>
