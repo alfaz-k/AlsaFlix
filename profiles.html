@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Who's Watching? — AlsaFlix</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('alsaflix-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <style>
+    .profile-shell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+      animation: fadeIn 0.6s var(--ease) both;
+    }
+
+    .profile-glass-container {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-top: 1px solid var(--border-glass-top);
+      border-left: 1px solid var(--border-glass-left);
+      border-radius: var(--radius-lg);
+      padding: 60px 50px;
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-lift);
+      backdrop-filter: blur(40px) saturate(200%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-glass-container::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 50%);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    .profile-title {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 6vw, 54px);
+      letter-spacing: 2.5px;
+      margin-bottom: 40px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: slideUp 0.6s var(--ease) both;
+    }
+
+    [data-theme="light"] .profile-title { text-shadow: none; }
+
+    .profiles-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 20px;
+      animation: slideUp 0.7s var(--ease) both;
+    }
+
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: 1px solid var(--border-glass-top);
+      border-left: 1px solid var(--border-glass-left);
+      border-radius: var(--radius-md);
+      padding: 18px 16px;
+      width: 160px;
+      cursor: pointer;
+      backdrop-filter: blur(20px);
+      transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease), background 0.4s var(--ease);
+    }
+
+    .profile-card:hover {
+      transform: translateY(-12px) scale(1.04);
+      border-color: var(--text-primary);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      background: var(--bg-elevated);
+    }
+
+    .profile-avatar-box {
+      width: 110px;
+      height: 110px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      border: 2px solid transparent;
+      transition: transform 0.4s var(--ease), border-color 0.3s var(--ease);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .profile-card:hover .profile-avatar-box {
+      border-color: var(--text-primary);
+      transform: scale(1.05);
+    }
+
+    .profile-avatar-box svg {
+      width: 50px;
+      height: 50px;
+      stroke: #ffffff;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .profile-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: color 0.3s var(--ease);
+    }
+
+    .profile-card:hover .profile-name {
+      color: var(--text-primary);
+    }
+
+    .add-profile-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed var(--border-light);
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .add-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+      transition: all 0.3s var(--ease);
+    }
+
+    .profile-card:hover .add-icon {
+      background: var(--text-primary);
+      color: var(--bg);
+      transform: scale(1.1) rotate(90deg);
+    }
+
+    /* Modal styling */
+    .profile-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(20px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .profile-modal.show { display: flex; animation: fadeIn 0.3s var(--ease) both; }
+
+    .profile-modal-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      border-top: 1px solid var(--border-glass-top);
+      border-left: 1px solid var(--border-glass-left);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lift);
+      backdrop-filter: blur(40px);
+      animation: modalIn 0.4s var(--ease) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 720px) {
+      .profile-glass-container { padding: 40px 20px; }
+      .profile-card { width: 135px; padding: 14px 10px; }
+      .profile-avatar-box { width: 90px; height: 90px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="backdrop"></div>
+
+  <main class="profile-shell">
+    <div class="profile-glass-container">
+      <h1 class="profile-title">Who's Watching?</h1>
+      <div id="profiles-grid" class="profiles-grid"></div>
+    </div>
+  </main>
+
+  <div id="add-profile-modal" class="profile-modal">
+    <div class="profile-modal-card">
+      <h3 style="font-family: var(--font-display); font-size: 32px; margin-bottom: 8px; letter-spacing: 1px;">Add Profile</h3>
+      <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;">Create a new space to keep track of your favorite shows.</p>
+      
+      <form id="add-profile-form">
+        <div class="field">
+          <label for="new-profile-name">Profile Name</label>
+          <div class="field-input-wrap">
+            <input type="text" id="new-profile-name" placeholder="e.g. Alex" required maxlength="15">
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 30px;">
+          <button type="submit" class="btn-primary" id="save-profile-btn"><span class="btn-label">Save Profile</span></button>
+          <button type="button" class="btn-logout" id="cancel-profile-btn" style="flex:1;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">DESIGNED AND DEVELOPED BY <span>ALFAZ KALADAGI</span></footer>
+
+  <script type="module" src="profiles.js"></script>
+</body>
+</html>
