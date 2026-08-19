@@ -14,7 +14,7 @@ import {
   onAuthStateChanged,
   updateProfile,
   signInWithPopup,
-  sendPasswordResetEmail // Imported sendPasswordResetEmail function
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ---- Helpers ----------------------------------------------
@@ -23,8 +23,6 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// At least 6 characters (Firebase's own minimum) — kept simple
-// and non-punishing, per the "lightweight" brief.
 function isStrongPassword(pw) {
   return pw.length >= 6;
 }
@@ -53,7 +51,6 @@ function clearFieldError(inputEl, errorEl) {
   errorEl.classList.remove("show");
 }
 
-// Turns Firebase's raw error codes into plain-language messages.
 function friendlyAuthError(error) {
   const code = error.code || "";
   const map = {
@@ -85,15 +82,12 @@ function wirePasswordToggle(toggleBtn, inputEl) {
   });
 }
 
-// ---- Redirect logged-in users away from auth pages ---------
-// Runs on index.html (login) and signup.html only.
 function redirectIfLoggedIn() {
   onAuthStateChanged(auth, (user) => {
-    if (user) window.location.href = "dashboard.html";
+    if (user) window.location.href = "profiles.html";
   });
 }
 
-// ---- Protect dashboard.html ---------------------------------
 function protectDashboard(onUser) {
   onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -130,7 +124,6 @@ function initLoginPage() {
     const email = emailInput.value.trim();
     const password = passInput.value;
 
-    // 1. Core Field Validations
     let valid = true;
     if (!isValidEmail(email)) {
       setFieldError(emailInput, emailError, "Enter a valid email address.");
@@ -142,7 +135,6 @@ function initLoginPage() {
     }
     if (!valid) return;
 
-    // 2. Security Wrapper: Verify Cloudflare Turnstile Token
     const turnstileResponse = typeof turnstile !== "undefined" ? turnstile.getResponse() : "";
     if (!turnstileResponse) {
       setCaptchaError(banner, "Please complete the security check.");
@@ -151,7 +143,12 @@ function initLoginPage() {
 
     setLoading(submitBtn, spinner, true, "Log In");
     try {
+      localStorage.setItem("alsaflix-theme", "light");
+      localStorage.setItem("theme", "light");
+      document.documentElement.setAttribute("data-theme", "light");
+
       await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "profiles.html";
     } catch (error) {
       showBanner(banner, friendlyAuthError(error), "error");
       setLoading(submitBtn, spinner, false, "Log In");
@@ -159,7 +156,6 @@ function initLoginPage() {
     }
   });
 
-  // ---- Forgot Password Logic ----
   const forgotPassLink = document.getElementById("login-forgot-pass");
   if (forgotPassLink) {
     forgotPassLink.addEventListener("click", async (e) => {
@@ -169,14 +165,13 @@ function initLoginPage() {
 
       const email = emailInput.value.trim();
 
-      // Ensure the email field isn't empty before sending the link
       if (!email || !isValidEmail(email)) {
         setFieldError(emailInput, emailError, "Please enter a valid email address first.");
         return;
       }
 
       try {
-        await sendPasswordResetEmail(auth, email); // Fires standard reset template link via Firebase
+        await sendPasswordResetEmail(auth, email);
         showBanner(banner, "Password reset email sent! Check your inbox.", "success");
       } catch (error) {
         showBanner(banner, friendlyAuthError(error), "error");
@@ -184,13 +179,17 @@ function initLoginPage() {
     });
   }
 
-  // ---- Google Sign-In Logic ----
   const googleBtn = document.getElementById("google-login-btn");
   if (googleBtn) {
     googleBtn.addEventListener("click", async () => {
       hideBanner(banner);
       try {
+        localStorage.setItem("alsaflix-theme", "light");
+        localStorage.setItem("theme", "light");
+        document.documentElement.setAttribute("data-theme", "light");
+
         await signInWithPopup(auth, provider);
+        window.location.href = "profiles.html";
       } catch (error) {
         showBanner(banner, friendlyAuthError(error), "error");
       }
@@ -199,7 +198,6 @@ function initLoginPage() {
 }
 
 // ---- Signup page wiring ----------------------------------------
-// (Unmodified to protect stability)
 function initSignupPage() {
   redirectIfLoggedIn();
 
@@ -255,8 +253,13 @@ function initSignupPage() {
 
     setLoading(submitBtn, spinner, true, "Create Account");
     try {
+      localStorage.setItem("alsaflix-theme", "light");
+      localStorage.setItem("theme", "light");
+      document.documentElement.setAttribute("data-theme", "light");
+
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
+      window.location.href = "profiles.html";
     } catch (error) {
       showBanner(banner, friendlyAuthError(error), "error");
       setLoading(submitBtn, spinner, false, "Create Account");
@@ -269,6 +272,11 @@ function wireLogout(buttonEl) {
   if (!buttonEl) return;
   buttonEl.addEventListener("click", async () => {
     try {
+      localStorage.setItem("alsaflix-theme", "light");
+      localStorage.setItem("theme", "light");
+      document.documentElement.setAttribute("data-theme", "light");
+      sessionStorage.removeItem("alsaflix_active_profile");
+      
       await signOut(auth);
       window.location.href = "index.html";
     } catch (error) {
