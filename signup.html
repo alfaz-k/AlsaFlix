@@ -8,7 +8,7 @@
     (function () {
       try {
         var t = localStorage.getItem('alsaflix-theme');
-        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        if (!t) t = 'light'; // Forced light mode default
         document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     })();
@@ -70,7 +70,7 @@
     </div>
   </main>
 
-  <footer class="footer">Made by Alfaz <span>❤️</span></footer>
+  <footer class="footer">DESIGNED AND DEVELOPED BY <span>ALFAZ KALADAGI</span></footer>
 
 <script src="theme.js"></script>
 <script type="module" src="firebase.js"></script>
