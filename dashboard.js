@@ -25,12 +25,31 @@ const suggestBtn = document.getElementById("suggest-movie-btn");
 const suggestModal = document.getElementById("suggest-modal");
 const closeSuggestBtn = document.getElementById("close-modal");
 
+// Mobile Menu Elements
+const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+const navActions = document.getElementById("nav-actions");
+
 // Mobile Notice Toast Elements
 const mobileNoticeToast = document.getElementById("mobile-notice-toast");
 const closeToastBtn = document.getElementById("close-toast-btn");
 
+// ---- Mobile Menu Toggle Logic ----
+if (mobileMenuBtn && navActions) {
+  mobileMenuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    navActions.classList.toggle("show");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!navActions.contains(e.target) && e.target !== mobileMenuBtn) {
+      navActions.classList.remove("show");
+    }
+  });
+}
+
 // ---- Suggest Movie Modal Handlers ----
 function openSuggestModal() {
+  if (navActions) navActions.classList.remove("show"); // Close mobile menu if open
   if (!suggestModal) return;
   suggestModal.classList.add("active");
   document.body.style.overflow = "hidden";
@@ -74,15 +93,12 @@ if (closeToastBtn && mobileNoticeToast) {
 function getEmbedUrl(rawUrl) {
   if (!rawUrl) return "";
   
-  // 1. Google Drive Links
   if (rawUrl.includes("drive.google.com")) {
     return rawUrl.replace(/\/view(\?.*)?$/, "/preview").replace(/\/edit(\?.*)?$/, "/preview");
   }
 
-  // 2. YouTube Links
   if (rawUrl.includes("youtube.com") || rawUrl.includes("youtu.be")) {
     let videoId = "";
-
     if (rawUrl.includes("youtu.be/")) {
       videoId = rawUrl.split("youtu.be/")[1]?.split("?")[0];
     } else if (rawUrl.includes("youtube.com/shorts/")) {
