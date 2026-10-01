@@ -297,6 +297,19 @@ body::after {
 
 .navbar-search input:focus ~ svg { stroke: var(--text-primary); }
 
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Nav Actions Container (Flex on Desktop, Menu on Mobile) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .btn-suggest {
   padding: 10px 22px;
   background: rgba(255, 255, 255, 0.05);
@@ -323,16 +336,10 @@ body::after {
 
 .btn-suggest:active { transform: translateY(0) scale(0.95); }
 
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
 .btn-logout {
   padding: 10px 22px;
   background: transparent;
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--text-secondary);
   font-size: 13px;
@@ -343,9 +350,10 @@ body::after {
 }
 
 .btn-logout:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-dim);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
 }
 
 #theme-toggle {
@@ -367,12 +375,35 @@ body::after {
 }
 
 #theme-toggle:hover {
-  transform: rotate(15deg) scale(1.08);
-  border-color: var(--border-light);
+  transform: rotate(-18deg) scale(1.1);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
+#theme-toggle:active { transform: scale(0.92); }
+
+.mobile-menu-btn {
+  display: none;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  border-top: 1px solid var(--border-glass-top);
+  border-left: 1px solid var(--border-glass-left);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.35s var(--ease);
+  color: var(--text-primary);
+}
+.mobile-menu-btn svg { width: 20px; height: 20px; stroke: currentColor; }
+.mobile-menu-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+
 /* ============================================================
-   AUTH PAGES (Signup Original)
+   AUTH PAGES 
    ============================================================ */
 .auth-shell {
   flex: 1;
@@ -1473,4 +1504,73 @@ body::after {
 
 .nl-footer-text {
   text-align: center; font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 24px;
+}
+
+/* ============================================================
+   MOBILE SPECIFIC - ADDED CLEAN DROPDOWN
+   ============================================================ */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mobile-menu-btn {
+  display: none;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  border-top: 1px solid var(--border-glass-top);
+  border-left: 1px solid var(--border-glass-left);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.35s var(--ease);
+  color: var(--text-primary);
+}
+
+.mobile-menu-btn svg { width: 20px; height: 20px; stroke: currentColor; }
+.mobile-menu-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+
+@media (max-width: 720px) {
+  .mobile-menu-btn { display: flex; }
+  
+  .nav-actions {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 20px;
+    background: var(--bg-elevated);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border-light);
+    border-top: 1px solid var(--border-glass-top);
+    border-left: 1px solid var(--border-glass-left);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: var(--shadow-lift);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s var(--ease);
+    z-index: 200;
+  }
+  
+  .nav-actions.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .nav-actions .btn-suggest, 
+  .nav-actions .btn-logout {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
 }
