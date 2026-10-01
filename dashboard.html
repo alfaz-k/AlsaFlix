@@ -9,7 +9,7 @@
     (function () {
       try {
         var t = localStorage.getItem('alsaflix-theme');
-        if (!t) t = 'light'; // Forced light mode default
+        if (!t) t = 'light'; 
         document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     })();
@@ -27,13 +27,24 @@
       </svg>
       <input type="text" id="search-input" placeholder="Search movies by title...">
     </div>
-    <button type="button" id="suggest-movie-btn" class="btn-suggest">
-  🎬 Suggest Movie
-</button>
 
     <div class="navbar-right">
-      <button class="btn-logout" id="logout-btn" type="button">Logout</button>
+      <!-- These buttons wrap into a dropdown on mobile -->
+      <div class="nav-actions" id="nav-actions">
+        <button type="button" id="suggest-movie-btn" class="btn-suggest">🎬 Suggest Movie</button>
+        <button class="btn-logout" id="logout-btn" type="button">Logout</button>
+      </div>
+      
       <button id="theme-toggle">🌙</button>
+
+      <!-- Hamburger Menu (Visible only on mobile) -->
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
     </div>
   </nav>
 
